@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>欢迎页面-智慧理工</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+        <link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon" />
+        <link rel="stylesheet" th:href="@{/X-admin/css/font.css}">
+		<link rel="stylesheet" th:href="@{/X-admin/css/xadmin.css}">
+    </head>
+    <body>
+    <div class="x-body layui-anim layui-anim-up">
+        <blockquote class="layui-elem-quote">
+        	欢迎管理员：
+            <span class="x-red" th:text="${session.systemUser.username}"></span>
+            ！当前时间:
+            <span id="localTime"></span>
+        </blockquote>
+        <fieldset class="layui-elem-field">
+            <legend>数据统计</legend>
+            <div class="layui-field-box">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-body">
+                            <div class="layui-carousel x-admin-carousel x-admin-backlog" lay-anim="" lay-indicator="inside" lay-arrow="none" style="width: 100%; height: 90px;">
+                                <div carousel-item="">
+                                    <ul class="layui-row layui-col-space10 layui-this">
+                                        <li class="layui-col-xs2">
+                                            <a href="javascript:;" class="x-admin-backlog-body">
+                                                <h3>普通用户数</h3>
+                                                <p>
+                                                    <cite th:text="${normalUser}"></cite></p>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs2">
+                                            <a href="javascript:;" class="x-admin-backlog-body">
+                                                <h3>讲师数</h3>
+                                                <p>
+                                                    <cite th:text="${lecturer}"></cite></p>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs2">
+                                            <a href="javascript:;" class="x-admin-backlog-body">
+                                                <h3>讲师申请数</h3>
+                                                <p>
+                                                    <cite th:text="${applyLecturer}"></cite></p>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs2">
+                                            <a href="javascript:;" class="x-admin-backlog-body">
+                                                <h3>已审核课程数</h3>
+                                                <p>
+                                                    <cite th:text="${alreadyAuddingCourseCount}"></cite></p>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs2">
+                                            <a href="javascript:;" class="x-admin-backlog-body">
+                                                <h3>未审核课程数</h3>
+                                                <p>
+                                                    <cite th:text="${notAuddingCourseCount}"></cite></p>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs2">
+                                            <a href="javascript:;" class="x-admin-backlog-body">
+                                                <h3>评论数</h3>
+                                                <p>
+                                                    <cite th:text="${commentCount}"></cite></p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field">
+            <legend>系统信息</legend>
+            <div class="layui-field-box">
+                <table class="layui-table">
+                    <tbody>
+                        <tr>
+                            <th>系统版本</th>
+                            <td>1.0</td>
+                        </tr>
+                        <tr>
+                            <th>服务器地址</th>
+                            <td>120.79.200.167</td>
+                        </tr>
+                        <tr>
+                            <th>操作系统</th>
+                            <td>ubuntu 16.04 LTS</td>
+                        </tr>
+                        <tr>
+                            <th>运行环境</th>
+                            <td>Apache Tomcat/9.0.14 (Win64)</td>
+                        </tr>
+                        <tr>
+                            <th>MYSQL版本</th>
+                            <td>5.7.25</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </fieldset>
+    </div>
+    <script type="text/javascript">
+     	function getD1(){
+        	var date=new Date();
+         	var d1=date.toLocaleString();
+         	var div1=document.getElementById("localTime");
+         	div1.innerHTML =d1;
+     	}
+     	setInterval("getD1();",1000);
+    </script>
+    </body>
+</html>

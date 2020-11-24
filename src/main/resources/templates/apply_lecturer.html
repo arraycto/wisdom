@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>申请讲师</title>
+<link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon" />
+<script type="text/javascript" th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
+<link rel="stylesheet" th:href="@{/webjars/layui/2.4.5/css/layui.css}">
+<script type="text/javascript" th:src="@{/webjars/layui/2.4.5/layui.js}"></script>
+</head>
+<body style="margin-top: 40px;">
+<span id="id" style="display: none;" th:text="${id}"></span>
+<div id="applying" style="display: none;">
+	<span style="color: red;margin-left: 175px;font-size: 16px;font-weight: 600;">您的申请正在审批中！</span>
+</div>
+<div id="pass" style="display: none;">
+	<span style="color: red;margin-left: 175px;font-size: 16px;font-weight: 600;">您的申请已通过！</span>
+</div>
+<div id="notPass" style="display: none;">
+	<span style="color: red;margin-left: 175px;font-size: 16px;font-weight: 600;">您的申请未通过！</span>
+</div>
+<form id="applyForm" class="layui-form" action="">
+  <div class="layui-form-item layui-form-text" style="width: 90%;">
+    <label class="layui-form-label">个人优势</label>
+    <div class="layui-input-block">
+      <textarea id="advantage" placeholder="请输入内容" class="layui-textarea"></textarea>
+    </div>
+  </div>
+  <div class="layui-form-item layui-form-text" style="width: 90%;">
+    <label class="layui-form-label">申请理由</label>
+    <div class="layui-input-block">
+      <textarea id="reason" placeholder="请输入内容" class="layui-textarea"></textarea>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit="" lay-filter="apply">立即申请</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+</form>
+<script>
+$(function () {
+	//查询
+	$.ajax({
+		url: "/queryApplyLecturerData",
+		type: "POST",
+      	async: false,
+      	data: {"id":$("#id").text()},
+      	success: function(data) {
+      		if(data.code == 101){
+      			$("#applyForm").hide();
+           		$("#applying").show();
+           		$("#pass").hide();
+           		$("#notPass").hide();
+           	}else if(data.code == 102) {
+           		$("#applyForm").hide();
+           		$("#applying").hide();
+           		$("#pass").show();
+           		$("#notPass").hide();
+           	}else if(data.code == 103) {
+           		$("#applyForm").hide();
+           		$("#applying").hide();
+           		$("#pass").hide();
+           		$("#notPass").show();
+           	}else {
+           		
+           	}
+      	}
+	})
+	//申请
+	layui.use('form', function(){
+	    var form = layui.form; 
+	    form.render();
+	    
+    	//监听提交
+	    form.on('submit(apply)', function(data){
+		    $.ajax({
+				url: "/applyLecturerData",
+				type: "POST",
+	      		async: false,
+	      		data: {"advantage":$("#advantage").val(),"reason":$("#reason").val()},
+	      		success: function(data) {
+	      			if(data.code == 0){
+          				layer.msg(data.msg);
+          				var index = parent.layer.getFrameIndex(window.name);
+          				setTimeout(function(){parent.layer.close(index)}, 1000);  
+            		}else {
+            			layer.msg(data.msg);
+            		}
+	      		}
+		  	})
+		  	return false;
+	  	});
+	})
+})
+</script>
+</body>
+</html>

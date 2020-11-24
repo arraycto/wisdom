@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>个人信息</title>
+<link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon" />
+<script type="text/javascript" th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
+<link rel="stylesheet" th:href="@{/webjars/layui/2.4.5/css/layui.css}">
+<script type="text/javascript" th:src="@{/webjars/layui/2.4.5/layui.js}"></script>
+</head>
+<body style="margin-top: 20px;">
+<form class="layui-form" action="">
+  <span id="id" style="display: none;" th:text="${id}"></span>
+  <div class="layui-form-item" style="width: 90%;">
+    <label class="layui-form-label">真实姓名</label>
+    <div class="layui-input-block">
+      <input type="text" id="realName" name="realName" placeholder="请输入" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item" style="width: 90%;">
+    <label class="layui-form-label">性别</label>
+    <div class="layui-input-block">
+      <input type="text" id="sex" name="sex" placeholder="请输入" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item" style="width: 90%;">
+    <label class="layui-form-label">出生日期</label>
+    <div class="layui-input-block">
+      <input type="text" id="birth" name="birth" placeholder="请输入" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item" style="width: 90%;">
+    <label class="layui-form-label">联系方式</label>
+    <div class="layui-input-block">
+      <input type="text" id="phone" name="phone" placeholder="请输入" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item" style="width: 90%;">
+    <label class="layui-form-label">邮箱</label>
+    <div class="layui-input-block">
+      <input type="text" id="mail" name="mail" placeholder="请输入" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit="" lay-filter="pI">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+</form>
+<script>
+$(function () {
+	//查询信息
+	$.ajax({
+		url: "/queryCommonUserInformation",
+		type: "POST",
+		data: {"id":$("#id").text()},
+  		async: false,
+  		success: function(data) {
+  			$("#realName").val(data.realname);
+  			$("#sex").val(data.sex);
+  			$("#birth").val(data.birth);
+  			$("#phone").val(data.phone);
+  			$("#mail").val(data.mail);
+  		}
+  	})
+	//更新
+	layui.use('form', function(){
+	    var form = layui.form; 
+	    form.render();
+	    
+    	//监听提交
+	    form.on('submit(pI)', function(data){
+		    $.ajax({
+				url: "/updateCommonUserInformation",
+				type: "POST",
+	      		async: false,
+	      		data: {"id":$("#id").text(),"realName":$("#realName").val(),"sex":$("#sex").val(),"birth":$("#birth").val(),"phone":$("#phone").val(),"mail":$("#mail").val()},
+	      		success: function(data) {
+	      			if(data.code == 0){
+          				layer.msg(data.msg);
+          				var index = parent.layer.getFrameIndex(window.name);
+          				setTimeout(function(){parent.layer.close(index)}, 1000);  
+            		}else {
+            			layer.msg(data.msg);
+            		}
+	      		}
+		  	})
+		  	return false;
+	  	});
+	})
+})
+</script>
+</body>
+</html>

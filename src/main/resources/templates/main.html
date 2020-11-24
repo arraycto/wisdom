@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>智慧理工_专业的在线教育平台</title>
+<link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon" />
+<script type="text/javascript" th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
+<link rel="stylesheet" th:href="@{/webjars/layui/2.4.5/css/layui.css}">
+<link rel="stylesheet" th:href="@{/css/main.css}">
+<script type="text/javascript" th:src="@{/webjars/layui/2.4.5/layui.js}"></script>
+<script type="text/javascript" th:src="@{/js/getcanvaspixelcolor.js}"></script>
+<script type="text/javascript" th:src="@{/js/appjs/main.js}"></script>
+</head>
+<body>
+<!-- 头部 -->
+<div class="head-all">
+	<div class="layui-container">  
+	    <div class="layui-row header-index">
+	    	<div class="layui-col-sm4">
+	     		<img class="header-index-logo" title="智慧理工" th:src="@{/image/logo.jpg}">
+	    	</div>
+	    	<div class="layui-col-sm4">
+	     	    <form class="layui-form " action="">
+				    <div class="layui-inline">
+				        <input type="text" name="keywords" id="keywords" placeholder="请输入关键词" class="layui-input header-index-search">
+				    </div>
+			        <button lay-submit lay-filter="courseSearch" class="layui-btn layui-btn-lg layui-btn-normal header-index-button">
+			        	<i class="layui-icon" style="font-size: 22px;margin-left:-12px;">&#xe615;</i>
+			        </button>
+	     		</form>
+	   		</div>
+	   		<div class="layui-col-sm4">
+	     		 <div th:if="not ${session.commonUser}" class="header-index-text">
+	     		 	<div style="margin-left: 200px;" class="header-index-private-msgs">
+	     		 		<p id="login" class="dropdown-tt">登录</p>
+	     		 	</div>
+	     		 	<div class="mod-header__wrap-login">
+	     		 		<p id="register" class="dropdown-tt">注册</p>
+	     		 	</div>
+	     		 </div>
+	     		 <div th:if="${session.commonUser}" class="header-index-text">
+	     		 	<div style="margin-left: 200px;" class="dropdown-wrap header-index-download">
+	     		 		<img class="headPortrait" th:src="${session.commonUser.headPortrait}">
+	     		 		<span th:text="${session.commonUser.username}" class="dropdown-tt"></span>
+	     		 	</div>
+	     		 </div>
+	   		</div>
+	  	</div>
+	</div>
+</div>
+<!-- 菜单栏、轮播图、登录 -->
+<div id="layui-cld" style="width: 100%;">
+	<div class="layui-fluid-carousel-box">
+		<!-- 菜单栏 -->
+		<div class="carousel-menu">
+			<nav class="mod-nav">
+				<ul id="courseParentsListUl" class="mod-nav__list">
+					<!-- 课程分类父节点 -->
+				</ul>
+			</nav>
+		</div>
+		<!-- 菜单栏显示 -->
+		<div id="courseChildrenMapShow">
+			<!-- 课程分类子节点 -->
+		</div>
+		<!-- 轮播图 -->
+		<div class="carousel-box">
+		    <div class="layui-carousel" id="carousel" lay-filter="carousel">
+		    	<div carousel-item> 
+				    <div>
+				    	<img id="carouselImg1" class="layui-fluid-carousel" th:src="@{/image/carousel/carousel1.jpg}">
+				    </div>
+				    <div>
+				    	<img class="layui-fluid-carousel" th:src="@{/image/carousel/carousel2.jpg}">
+				    </div>
+				    <div>
+				    	<img class="layui-fluid-carousel" th:src="@{/image/carousel/carousel3.jpg}">
+				    </div>
+				    <div>
+				    	<img class="layui-fluid-carousel" th:src="@{/image/carousel/carousel4.jpg}">
+				    </div>
+				    <div>
+				    	<img class="layui-fluid-carousel" th:src="@{/image/carousel/carousel5.jpg}">
+				    </div>
+				    <div>
+				    	<img class="layui-fluid-carousel" th:src="@{/image/carousel/carousel6.jpg}">
+				    </div>
+				    <div>
+				    	<img class="layui-fluid-carousel" th:src="@{/image/carousel/carousel7.jpg}">
+				    </div>
+				    <div>
+				    	<img class="layui-fluid-carousel" th:src="@{/image/carousel/carousel8.jpg}">
+				    </div>
+		    	</div>
+			</div>
+		</div>
+		<!-- 登录信息显示框 -->
+		<div id="carouselLogin" class="carousel-login">
+			<div th:if="not ${session.commonUser}" class="mod-entry-user--unlogin">
+				<div class="mod-entry-nologin">
+					<p class="mod-entry-nologin-tips">跟进你的学习进度</p>
+					<div class="mod-entry-nologin-img"></div>
+				</div>
+				<a id="carouselLoginButton" class="mod-entry-login">登录</a>
+			</div>
+			<div th:if="${session.commonUser}" class="mod-entry-user--logined">
+				<a href="#">
+					<span id="userId" style="display: none;" th:text="${session.commonUser.id}"></span>
+					<img class="loginHead" th:src="${session.commonUser.headPortrait}">
+					<span class="mod-entry-user-info" th:text="${session.commonUser.username}"></span>
+				</a>
+				<a id="commonLogout" href="#" class="mod-entry-user-logout">退出</a>
+				<div class="mod-entry-user-hover" style="border-top: 1px solid #e5e5e5;padding-top: 20px;">
+					<a id="personalInformation" href="#" class="mod-entry-user-schedule">
+						<i class="layui-icon layui-icon-user icon-font">&emsp;个人信息</i>
+					</a>
+					<div th:if="${session.commonUser.roleId}==3">
+						<a id="applyLecturer" href="#" class="mod-entry-user-schedule">
+							<i class="layui-icon layui-icon-date icon-font">&emsp;讲师申请</i>
+						</a>
+						<a href="/toMyCollectionPage" target="_blank" class="mod-entry-user-schedule">
+							<i class="layui-icon layui-icon-notice icon-font">&emsp;我的收藏</i>
+						</a>
+					</div>
+					<div th:if="${session.commonUser.roleId}==2">
+						<a href="/toReleaseCourse" target="_blank" class="mod-entry-user-schedule">
+							<i class="layui-icon layui-icon-date icon-font">&emsp;发布课程</i>
+						</a>
+						<a href="/toAlreadyReleasedCoursePage" target="_blank" class="mod-entry-user-schedule">
+							<i class="layui-icon layui-icon-notice icon-font">&emsp;我的课程</i>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div> 
+</div>
+<!-- 画布获取轮播图图片 -->
+<div style="display: none;">
+	<canvas id="carouselCanvas" width="710px" height="300px"></canvas> 
+</div>
+<!-- 新上好课 -->
+<div class="bgfff">
+	<div class="clearfix">
+		<h3 class="types-title">
+			<span class="tit-icon tit-icon-l icon-shizhan-l"></span>
+			<em>新</em>
+			／
+			<em>上</em>
+			／
+			<em>好</em>
+			／
+			<em>课</em>
+			<span class="tit-icon tit-icon-r icon-shizhan-r"></span>
+		</h3>
+		<div id="latestCourses" class="types-content">
+		
+		</div>
+	</div>
+</div>
+<!-- 热门课程 -->
+<div class="bg000">
+	<div class="clearfix">
+		<h3 class="types-title">
+			<span class="tit-icon tit-icon-l icon-shizhan-l"></span>
+			<em>热</em>
+			／
+			<em>门</em>
+			／
+			<em>课</em>
+			／
+			<em>程</em>
+			<span class="tit-icon tit-icon-r icon-shizhan-r"></span>
+		</h3>
+		<div id="hottestCourses" class="types-content">
+			
+		</div>
+	</div>
+</div>
+<!-- 站长推荐 -->
+<div class="bgfff">
+	<div class="clearfix">
+		<h3 class="types-title">
+			<span class="tit-icon tit-icon-l icon-shizhan-l"></span>
+			<em>站</em>
+			／
+			<em>长</em>
+			／
+			<em>推</em>
+			／
+			<em>荐</em>
+			<span class="tit-icon tit-icon-r icon-shizhan-r"></span>
+		</h3>
+		<div id="recommendCourses" class="types-content">
+			
+		</div>
+	</div>
+</div>
+<!-- 尾部 -->
+<div class="footer">
+	<div class="layui-container">
+		<div class="footer-link">
+	        <a href="javascript:void(0);" target="_blank" title="企业合作">企业合作</a>     
+	        <a href="javascript:void(0);" target="_blank" title="人才招聘">人才招聘</a>      
+	        <a href="javascript:void(0);" target="_blank" title="联系我们">联系我们</a>      
+	        <a href="javascript:void(0);" target="_blank" title="讲师招募">讲师招募</a>      
+	        <a href="javascript:void(0);" target="_blank" title="帮助中心">帮助中心</a>      
+	        <a href="javascript:void(0);" target="_blank" title="意见反馈">意见反馈</a>      
+	        <a href="javascript:void(0);" target="_blank" title="常熟理工">常熟理工</a>      
+	        <a href="javascript:void(0);" target="_blank" title="友情链接">友情链接</a>    
+	    </div>
+	    <div class="footer-copyright">     
+	    	<p>©&nbsp;2019&nbsp;<a href="oldghoast.com" target="_blank" title="陈小兵的个人博客">陈小兵的个人博客</a>&nbsp;&nbsp;苏ICP备 2281901186号-QQ</p>   
+	    </div>
+	</div>
+</div>
+</body>
+</html>

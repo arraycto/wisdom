@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>智慧理工-用户注册</title>
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon" />
+    <link rel="stylesheet" th:href="@{/X-admin/css/font.css}">
+	<link rel="stylesheet" th:href="@{/X-admin/css/xadmin.css}">
+	<link rel="stylesheet" th:href="@{/webjars/layui/2.4.5/css/layui.css}">
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
+    <script th:src="@{/X-admin/lib/layui/layui.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/X-admin/js/xadmin.js}"></script>
+</head>
+<body class="login-bg">
+    
+    <div class="login layui-anim layui-anim-up">
+        <div class="message">智慧理工-用户注册</div>
+        <div id="darkbannerwrap"></div>
+        
+        <form method="post" class="layui-form" >
+            <input id="registerUsername" name="registerUsername" placeholder="用户名"  type="text" lay-verify="required|registerUsername" class="layui-input" >
+            <hr class="hr15">
+            <input id="registerPassword" name="registerPassword" lay-verify="required|registerPassword" placeholder="密码"  type="password" class="layui-input">
+            <hr class="hr15">
+            <input id="confirmPassword" name="confirmPassword" lay-verify="required|confirmPassword" placeholder="确认密码"  type="password" class="layui-input">
+            <hr class="hr15">
+            <input value="注册" lay-submit lay-filter="register" style="width:100%;" type="submit">
+            <hr class="hr20" >
+        </form>
+    </div>
+
+    <script>
+    $(function  () {
+    	layui.use('form', function(){
+    	    var form = layui.form; 
+    	    form.render();
+    	    
+    	  //自定义验证规则
+    	    form.verify({
+    	    	registerUsername: function(value, item){
+    	    		if(value.length < 3){
+    		            return '用户名至少3个字符';
+    		        }
+    		        if(value.length > 10){
+    		            return '用户名不得超过10个字符';
+    		        }
+    		        var checkResult = "";
+    		        $.ajax({
+    		        	url: "/checkUsername",
+    		        	type: "POST",
+    		        	data: {"username":value},
+    		        	async: false,
+    		        	success: function(data) {
+    						if(data.code=="500"){
+    							checkResult = data.msg;
+    						}
+    					}
+    		        });
+    		        return checkResult;
+    	    	}
+    	    	,registerPassword: [
+    	    		/^[\S]{6,12}$/
+    	    		,'密码必须6到12位，且不能出现空格'
+    	    	]
+    	    	,confirmPassword: function(value, item){
+    	    		if(value!=$("#registerPassword").val()){
+    		            return '两次密码不一致!';
+    		        }
+    	    	}
+    	    });
+          	//监听表单提交
+    	    form.on('submit(register)', function() {
+        		$.ajax({
+        			url: "/commonRegister",
+        			type: "POST",
+                	async: false,
+                	data: {"username":$("#registerUsername").val(),"password":$("#registerPassword").val()},
+                	success: function(data) {
+        				if(data.code == 0){
+        					setTimeout("location.href=document.referrer;", 1000);
+        					layer.msg(data.msg);
+        				}else{
+        					layer.msg(data.msg);
+        				}
+        			}
+        		})
+        		return false;
+    	    });
+    	})
+    })
+    </script>
+</body>
+</html>
